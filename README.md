@@ -1,3 +1,4 @@
+#Application Link:- https://movies-recommendation-system-tv8n.onrender.com
 # 🎬 Movies Recommendation System
 
 A content-based movie recommender built with **NLP** and **Streamlit**. Pick a movie you like, and the app suggests **5 similar movies** instantly.
