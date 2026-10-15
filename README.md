@@ -1,7 +1,10 @@
-#Application Link:- https://movies-recommendation-system-tv8n.onrender.com
 # 🎬 Movies Recommendation System
 
-A content-based movie recommender built with **NLP** and **Streamlit**. Pick a movie you like, and the app suggests **5 similar movies** instantly.
+A content-based movie recommender built with **NLP** and **Streamlit**, containerized with **Docker** and deployed on **Render**. Pick a movie you like, and the app suggests **5 similar movies** instantly.
+
+### 🔗 Live Demo: https://movies-recommendation-system-tv8n.onrender.com
+
+> The app runs on Render's free plan, so the first load may take about a minute to wake up.
 
 ---
 
@@ -20,6 +23,8 @@ The system reads the **content** of each movie (its tags), converts the text int
 - Dropdown with thousands of movies to choose from
 - Top **5 similar movies** in one click
 - Fast results, because the similarity matrix is pre-computed
+- Dockerized, so it runs the same way on any machine
+- Deployed live on **Render**
 
 ---
 
@@ -51,6 +56,8 @@ If you pick a space adventure movie, its tags (genre, keywords, cast, etc.) will
 | Scikit-learn | CountVectorizer and cosine similarity |
 | Streamlit | Web app |
 | Pickle, Joblib | Saving processed data and similarity matrix |
+| Docker | Containerizing the app |
+| Render | Cloud deployment |
 
 ---
 
@@ -60,6 +67,8 @@ If you pick a space adventure movie, its tags (genre, keywords, cast, etc.) will
 Movies-Recommendation-System/
 │
 ├── app.py                 # Streamlit app
+├── Dockerfile             # Docker image setup
+├── .dockerignore          # Files Docker should skip
 ├── movies.pickle          # Processed movies data
 ├── similarity.joblib      # Pre-computed similarity matrix
 ├── notebook.ipynb         # Data cleaning + model building
@@ -88,6 +97,54 @@ streamlit run app.py
 ```
 
 The app will open in your browser at `http://localhost:8501`.
+
+---
+
+## 🐳 Run with Docker
+
+**1. Build the image**
+```bash
+docker build -t movies-recommender .
+```
+
+**2. Run the container**
+```bash
+docker run -p 8501:8501 movies-recommender
+```
+
+Open `http://localhost:8501` in your browser.
+
+**Dockerfile used in this project**
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8501
+
+CMD ["sh", "-c", "streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0"]
+```
+
+---
+
+## ☁️ Deploy on Render
+
+1. Push the project (with `Dockerfile`) to GitHub
+2. Go to [render.com](https://render.com) and click **New +** → **Web Service**
+3. Connect your GitHub repo `Movies-Recommendation-System`
+4. Set **Runtime** to **Docker** (Render detects the `Dockerfile` automatically)
+5. Choose the **Free** instance type and click **Create Web Service**
+6. Wait for the build to finish. Render gives you a public URL
+
+> Render passes the port through the `PORT` variable. The `CMD` above already reads it, so no extra setup is needed.
+> On the free plan, the app may take about a minute to wake up after being idle.
+
+🔗 **Live Demo:** [Open the app](YOUR_RENDER_URL_HERE)
 
 ---
 
@@ -122,7 +179,7 @@ joblib
 - Show movie **posters** using the TMDB API
 - Try **TF-IDF** or **sentence embeddings** for better accuracy
 - Add filters by genre, year, or rating
-- Deploy the app on **Streamlit Community Cloud**
+- Add CI/CD so every GitHub push redeploys automatically
 
 ---
 
@@ -139,3 +196,4 @@ joblib
 GitHub: [asimshaikh0730-beep](https://github.com/asimshaikh0730-beep)
 
 ⭐ If you liked this project, please give it a star!
+
